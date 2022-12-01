@@ -1,46 +1,77 @@
 package org.ecn;
 
-import java.io.DataInputStream;
+import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Main {
+    //    public static void main(String[] args) {
+//        try {
+////            displayAllImageInImg();
+//            displaySingleImageByName("/img/brain.pgm");
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//    }
     public static void main(String[] args) {
+        /* Use an appropriate Look and Feel */
         try {
-//            displayAllImageInImg();
-            displaySingleImageByName("/img/brain.pgm");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+        } catch (UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
+        /* Turn off metal's use of bold fonts */
+        UIManager.put("swing.boldMetal", Boolean.FALSE);
+        //Schedule a job for the event dispatchi thread:
+        //creating and showing this application's GUI.
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            try {
+                displaySingleImageByName("/img/brain.pgm").createAndShowGUI();
+//                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
+//                    displayImageInAwt.createAndShowGUI();
+//                }
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 
-    public static void displayAllImageInImg() throws URISyntaxException {
+    public static List<DisplayImageInAwt> displayAllImageInImg() throws URISyntaxException {
         File ficherPath = new File(ResourcesHelper.getResourceAsURL("/img").toURI());
+        List<DisplayImageInAwt> displayImageInAwts = new ArrayList<>();
         for (File file : Objects.requireNonNull(ficherPath.listFiles())) {
-            displaySingleImage(file);
+            displayImageInAwts.add(displaySingleImage(file));
         }
+        return displayImageInAwts;
     }
 
-    public static void displaySingleImageByName(String imageName) throws URISyntaxException {
+    public static DisplayImageInAwt displaySingleImageByName(String imageName) throws URISyntaxException {
         String fichierPgm = "/img/brain.pgm";
         File ficherPath = new File(ResourcesHelper.getResourceAsURL(fichierPgm).toURI());
-        displaySingleImage(ficherPath);
+        return displaySingleImage(ficherPath);
     }
 
-    public static void displaySingleImage(File imgFile) {
+    public static DisplayImageInAwt displaySingleImage(File imgFile) {
         PgmDataImage pgmDataImage = null;
         try {
             pgmDataImage = PgmReader.readImage(imgFile);
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to read image !" + imgFile);
-            return;
+            return null;
         }
-        DisplayImageInAwt displayImageInAwt = new DisplayImageInAwt(imgFile.getName(), pgmDataImage);
+        return new DisplayImageInAwt(imgFile.getName(), pgmDataImage);
     }
 }
