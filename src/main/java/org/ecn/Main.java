@@ -9,14 +9,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Main {
-    //    public static void main(String[] args) {
-//        try {
-////            displayAllImageInImg();
-//            displaySingleImageByName("/img/brain.pgm");
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//    }
     public static void main(String[] args) {
         /* Use an appropriate Look and Feel */
         try {
@@ -37,10 +29,10 @@ public class Main {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> {
             try {
-                displaySingleImageByName("/img/brain.pgm").createAndShowGUI();
-//                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
-//                    displayImageInAwt.createAndShowGUI();
-//                }
+//                displaySingleImageByName("/img/baboon.pgm").createAndShowGUI();
+                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
+                    displayImageInAwt.createAndShowGUI();
+                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -58,8 +50,7 @@ public class Main {
     }
 
     public static DisplayImageInAwt displaySingleImageByName(String imageName) throws URISyntaxException {
-        String fichierPgm = "/img/brain.pgm";
-        File ficherPath = new File(ResourcesHelper.getResourceAsURL(fichierPgm).toURI());
+        File ficherPath = new File(ResourcesHelper.getResourceAsURL(imageName).toURI());
         return displaySingleImage(ficherPath);
     }
 

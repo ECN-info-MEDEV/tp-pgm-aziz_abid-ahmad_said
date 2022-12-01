@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class PgmDataImage {
-    int width, height;
-    int[][] data;
+    private int width, height;
+    private int[][] data;
 
-    public int [] getPixels() {
+    public int[] getPixels() {
         // fabrication des pixels gris au format usuel AWT : ColorModel.RGBdefault
         int[] pixels = new int[getWidth() * getHeight()];
         int piIndex = 0;
@@ -17,5 +17,48 @@ public class PgmDataImage {
             }
         }
         return pixels;
+    }
+
+    public PgmDataImage aggrandirWidth(double xRatio) {
+        PgmDataImage resizedImage = new PgmDataImage();
+        resizedImage.height = height;
+        resizedImage.width = (int) (width * xRatio);
+        resizedImage.data = new int[resizedImage.height][resizedImage.width];
+        double widthToAdd = resizedImage.width - width;
+        int addPixelWidthEvery = (int) (width / widthToAdd);
+        for (int i = 0; i < getHeight(); i++) {
+            int widthIndex = 0;
+            for (int j = 0; j < getWidth(); j++) {
+                if (widthIndex >= resizedImage.width)
+                    break;
+                if (j % addPixelWidthEvery == 0) {
+                    resizedImage.data[i][widthIndex++] = data[i][j];
+                }
+                if (widthIndex < resizedImage.width)
+                    resizedImage.data[i][widthIndex++] = data[i][j];
+            }
+            while (widthIndex != resizedImage.width) {
+                resizedImage.data[i][widthIndex++] = data[i][width - 1];
+            }
+        }
+        return resizedImage;
+    }
+
+    public PgmDataImage aggrandirHeight(double yRatio) {
+        PgmDataImage resizedImage = new PgmDataImage();
+        resizedImage.height = (int) (height * yRatio);
+        resizedImage.width = width;
+        resizedImage.data = new int[resizedImage.height][resizedImage.width];
+        double heightToAdd = resizedImage.height - height;
+        int addRowPixelHeightEvery = (int) (height / heightToAdd);
+        int rowIndex = 0;
+        for (int i = 0; i < getHeight(); i++) {
+            if (rowIndex >= resizedImage.height) break;
+            System.arraycopy(data[i], 0, resizedImage.data[rowIndex++], 0, getWidth());
+            if (rowIndex % addRowPixelHeightEvery == 0 && rowIndex < resizedImage.height) {
+                System.arraycopy(data[i], 0, resizedImage.data[rowIndex++], 0, getWidth());
+            }
+        }
+        return resizedImage;
     }
 }

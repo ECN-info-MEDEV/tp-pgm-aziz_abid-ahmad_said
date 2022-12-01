@@ -2,8 +2,6 @@ package org.ecn;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.MemoryImageSource;
 
 public class DisplayImageInAwt extends JFrame {
@@ -11,7 +9,8 @@ public class DisplayImageInAwt extends JFrame {
     // GUI elements
     FlowLayout experimentLayout = new FlowLayout();
 
-    JButton applyButton = new JButton("Agrandir * 1.1");
+    JButton widthResize = new JButton("Agrandir Width by 1.1");
+    JButton heightResize = new JButton("Agrandir Height by 1.1");
 
 
     // data
@@ -29,28 +28,32 @@ public class DisplayImageInAwt extends JFrame {
         experimentLayout.setAlignment(FlowLayout.TRAILING);
         JPanel controls = new JPanel();
         controls.setLayout(new FlowLayout());
-        controls.add(applyButton);
+        controls.add(widthResize);
+        controls.add(heightResize);
 
-        // construit une image avec ces pixels
-        MemoryImageSource source = new MemoryImageSource(pgmDataImage.width, pgmDataImage.height, pgmDataImage.getPixels(), 0, pgmDataImage.width);
-        Image img = Toolkit.getDefaultToolkit().createImage(source);
-        compsToExperiment.add(new DisplayImage(img));
+        compsToExperiment.add(generateImageFrame());
 
         //Process the Apply component orientation button press
-        applyButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("i must agrandir l'image");
-                compsToExperiment.removeAll();
-                MemoryImageSource source = new MemoryImageSource(pgmDataImage.width, pgmDataImage.height, pgmDataImage.getPixels(), 0, pgmDataImage.width);
-                Image img = Toolkit.getDefaultToolkit().createImage(source);
-                compsToExperiment.add(new DisplayImage(img));
+        widthResize.addActionListener(e -> {
+            pgmDataImage = pgmDataImage.aggrandirWidth(1.1);
+            compsToExperiment.removeAll();
+            compsToExperiment.add(generateImageFrame());
+        });
 
-                compsToExperiment.validate();
-                compsToExperiment.repaint();
-            }
+        heightResize.addActionListener(e -> {
+            pgmDataImage = pgmDataImage.aggrandirHeight(1.1);
+            compsToExperiment.removeAll();
+            compsToExperiment.add(generateImageFrame());
         });
         pane.add(compsToExperiment, BorderLayout.CENTER);
         pane.add(controls, BorderLayout.SOUTH);
+    }
+
+    public DisplayImage generateImageFrame() {
+        // construit une image avec ces pixels
+        MemoryImageSource source1 = new MemoryImageSource(pgmDataImage.getWidth(), pgmDataImage.getHeight(), pgmDataImage.getPixels(), 0, pgmDataImage.getWidth());
+        Image img1 = Toolkit.getDefaultToolkit().createImage(source1);
+        return new DisplayImage(img1);
     }
 
     /**
