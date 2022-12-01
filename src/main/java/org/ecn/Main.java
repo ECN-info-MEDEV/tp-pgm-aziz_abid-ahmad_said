@@ -5,22 +5,42 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String fichierPgm = "/img/brain.pgm";
-        PgmDataImage pgmDataImage = null;
         try {
-            File ficherPath = new File(ResourcesHelper.getResourceAsURL(fichierPgm).toURI());
-            pgmDataImage = PgmReader.readImage(ficherPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Failed to read image !");
-            System.exit(1);
+//            displayAllImageInImg();
+            displaySingleImageByName("/img/brain.pgm");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        DisplayImageInAwt displayImageInAwt = new DisplayImageInAwt(fichierPgm, pgmDataImage);
+    }
+
+
+    public static void displayAllImageInImg() throws URISyntaxException {
+        File ficherPath = new File(ResourcesHelper.getResourceAsURL("/img").toURI());
+        for (File file : Objects.requireNonNull(ficherPath.listFiles())) {
+            displaySingleImage(file);
+        }
+    }
+
+    public static void displaySingleImageByName(String imageName) throws URISyntaxException {
+        String fichierPgm = "/img/brain.pgm";
+        File ficherPath = new File(ResourcesHelper.getResourceAsURL(fichierPgm).toURI());
+        displaySingleImage(ficherPath);
+    }
+
+    public static void displaySingleImage(File imgFile) {
+        PgmDataImage pgmDataImage = null;
+        try {
+            pgmDataImage = PgmReader.readImage(imgFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Failed to read image !" + imgFile);
+            return;
+        }
+        DisplayImageInAwt displayImageInAwt = new DisplayImageInAwt(imgFile.getName(), pgmDataImage);
     }
 }
