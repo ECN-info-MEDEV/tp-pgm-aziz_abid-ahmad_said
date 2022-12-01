@@ -10,6 +10,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+
         try {
 //            displayAllImageInImg();
             displaySingleImageByName("/img/brain.pgm");
@@ -36,6 +38,10 @@ public class Main {
         PgmDataImage pgmDataImage = null;
         try {
             pgmDataImage = PgmReader.readImage(imgFile);
+            int[] pixels = PgmUtils.pixelMapHistogram();
+            for (int i = 0; i < pixels.length; i++) {
+                System.out.println(pixels[i]);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to read image !" + imgFile);
