@@ -40,6 +40,7 @@ public class PgmReader {
         PgmDataImage pgmDataImage = new PgmDataImage();
         pgmDataImage.setWidth(picWidth);
         pgmDataImage.setHeight(picHeight);
+        pgmDataImage.setMaxValue(maxvalue);
         pgmDataImage.setData(data2D);
         return pgmDataImage;
     }
