@@ -2,6 +2,7 @@ package org.ecn;
 
 import lombok.Data;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -28,6 +29,7 @@ public class PgmDataImage {
         PgmDataImage resizedImage = new PgmDataImage();
         resizedImage.height = height;
         resizedImage.width = (int) (width * xRatio);
+        resizedImage.maxValue = maxValue;
         resizedImage.data = new int[resizedImage.height][resizedImage.width];
         double widthToAdd = resizedImage.width - width;
         int addPixelWidthEvery = (int) (width / widthToAdd);
@@ -53,6 +55,7 @@ public class PgmDataImage {
         PgmDataImage resizedImage = new PgmDataImage();
         resizedImage.height = (int) (height * yRatio);
         resizedImage.width = width;
+        resizedImage.maxValue = maxValue;
         resizedImage.data = new int[resizedImage.height][resizedImage.width];
         double heightToAdd = resizedImage.height - height;
         int addRowPixelHeightEvery = (int) (height / heightToAdd);
@@ -69,36 +72,42 @@ public class PgmDataImage {
 
     public void saveToFile(OutputStream fileOutputStream) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+        BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
-        StringBuilder content = new StringBuilder();
-        content.append("P2\n");
-        content.append("# \n");
-        content.append(width).append("  ").append(height).append("\n");
-        content.append(maxValue).append("\n");
+        StringBuilder headers = new StringBuilder();
+        headers.append("P2\n");
+        headers.append("# \n");
+        headers.append(width).append("  ").append(height).append("\n");
+        headers.append(maxValue).append("\n");
+        bufferedWriter.write(headers.toString());
+
         int maxCharacterPerLine = 70;
         for (int i = 0; i < getHeight(); i++) {
             StringBuilder line = new StringBuilder();
             boolean isLineAdded = false;
             for (int j = 0; j < getWidth(); j++) {
-                String value = data[i][j] + "  ";
-                if (line.length() + value.length() < maxCharacterPerLine) {
+                String value = String.valueOf(data[i][j]);
+                if (line.length() + value.length()<= maxCharacterPerLine) {
                     line.append(value);
                     isLineAdded = false;
-
+                }
+                // add space, either 2 spaced either jump a line
+                if (j+1 < getWidth() && line.length() + 2 + String.valueOf(data[i][j+1]).length()<= maxCharacterPerLine) {
+                    line.append("  ");
                 } else {
-                    content.append(line);
-                    content.append("\n");
+                    line.append("\n");
+                    bufferedWriter.write(line.toString());
                     isLineAdded = true;
                     line = new StringBuilder();
                 }
             }
             if (!isLineAdded) {
-                content.append(line);
+                bufferedWriter.write(line.toString());
             }
-            content.append("\n");
+            bufferedWriter.write("\n");
         }
 
-        writer.write(content.toString());
+        bufferedWriter.flush();
         writer.close();
     }
 }

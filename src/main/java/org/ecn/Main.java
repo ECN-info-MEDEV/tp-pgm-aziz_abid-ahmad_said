@@ -29,10 +29,10 @@ public class Main {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> {
             try {
-                displaySingleImageByName("/img/baboon.pgm").createAndShowGUI();
-//                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
-//                    displayImageInAwt.createAndShowGUI();
-//                }
+//                displaySingleImageByName("/img/baboon.pgm").createAndShowGUI();
+                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
+                    displayImageInAwt.createAndShowGUI();
+                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -63,6 +63,6 @@ public class Main {
             System.err.println("Failed to read image !" + imgFile);
             return null;
         }
-        return new DisplayImageInAwt(imgFile.getName(), pgmDataImage);
+        return new DisplayImageInAwt(imgFile.getName().replaceAll(".pgm",""), pgmDataImage);
     }
 }

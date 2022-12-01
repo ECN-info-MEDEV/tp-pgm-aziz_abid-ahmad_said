@@ -15,18 +15,20 @@ public class DisplayImageInAwt extends JFrame {
 
     JButton widthResize = new JButton("Agrandir Width by 1.1");
 
-    Integer currentXRation = 1;
+    double currentXRation = 1;
     JButton heightResize = new JButton("Agrandir Height by 1.1");
-    Integer currentYRation = 1;
+    double currentYRation = 1;
     JButton saveImageToFile = new JButton("Save To File");
 
 
     // data
+    String fileName;
     PgmDataImage pgmDataImage;
 
     // constructeur pour un argument Pixmap
     public DisplayImageInAwt(String name, PgmDataImage p) {
         super(name);
+        fileName = name;
         pgmDataImage = p;
     }
 
@@ -45,20 +47,20 @@ public class DisplayImageInAwt extends JFrame {
         //Process the Apply component orientation button press
         widthResize.addActionListener(e -> {
             pgmDataImage = pgmDataImage.aggrandirWidth(1.1);
-            currentXRation *= 1;
+            currentXRation *= 1.1;
             compsToExperiment.removeAll();
             compsToExperiment.add(generateImageFrame());
         });
 
         heightResize.addActionListener(e -> {
             pgmDataImage = pgmDataImage.aggrandirHeight(1.1);
-            currentYRation *= 1;
+            currentYRation *= 1.1;
             compsToExperiment.removeAll();
             compsToExperiment.add(generateImageFrame());
         });
         saveImageToFile.addActionListener(e -> {
             try {
-                pgmDataImage.saveToFile(Files.newOutputStream(new File("resized image_x" + currentXRation + "_y" + currentYRation).toPath()));
+                pgmDataImage.saveToFile(Files.newOutputStream(new File(fileName+"_resized_"  + currentXRation + "_y" + currentYRation + ".pgm").toPath()));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
