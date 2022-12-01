@@ -29,10 +29,10 @@ public class Main {
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> {
             try {
-//                displaySingleImageByName("/img/baboon.pgm").createAndShowGUI();
-                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
-                    displayImageInAwt.createAndShowGUI();
-                }
+                displaySingleImageByName("/img/baboon.pgm").createAndShowGUI();
+//                for (DisplayImageInAwt displayImageInAwt : displayAllImageInImg()) {
+//                    displayImageInAwt.createAndShowGUI();
+//                }
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

@@ -2,9 +2,14 @@ package org.ecn;
 
 import lombok.Data;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+
 @Data
 public class PgmDataImage {
-    private int width, height;
+    private int width, height, maxValue;
     private int[][] data;
 
     public int[] getPixels() {
@@ -60,5 +65,40 @@ public class PgmDataImage {
             }
         }
         return resizedImage;
+    }
+
+    public void saveToFile(OutputStream fileOutputStream) throws IOException {
+        OutputStreamWriter writer = new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8);
+
+        StringBuilder content = new StringBuilder();
+        content.append("P2\n");
+        content.append("# \n");
+        content.append(width).append("  ").append(height).append("\n");
+        content.append(maxValue).append("\n");
+        int maxCharacterPerLine = 70;
+        for (int i = 0; i < getHeight(); i++) {
+            StringBuilder line = new StringBuilder();
+            boolean isLineAdded = false;
+            for (int j = 0; j < getWidth(); j++) {
+                String value = data[i][j] + "  ";
+                if (line.length() + value.length() < maxCharacterPerLine) {
+                    line.append(value);
+                    isLineAdded = false;
+
+                } else {
+                    content.append(line);
+                    content.append("\n");
+                    isLineAdded = true;
+                    line = new StringBuilder();
+                }
+            }
+            if (!isLineAdded) {
+                content.append(line);
+            }
+            content.append("\n");
+        }
+
+        writer.write(content.toString());
+        writer.close();
     }
 }
